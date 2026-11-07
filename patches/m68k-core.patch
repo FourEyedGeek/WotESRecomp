@@ -1,0 +1,51 @@
+diff --git a/profiles/genesis/code_generator.c b/profiles/genesis/code_generator.c
+index 2a02db3..3f9a788 100644
+--- a/profiles/genesis/code_generator.c
++++ b/profiles/genesis/code_generator.c
+@@ -2333,9 +2333,10 @@ static void emit_instr(FILE *f, const GenesisRom *rom,
+                     seen_offsets[seen_count++] = off;
+                     fprintf(f, "    case %d: goto label_%06X;\n", off, pc_targets[t]);
+                 } }
+-                fprintf(f, "    default: hybrid_jmp_interpret(0x%08Xu + "
+-                        "m68k_brief_index_value(0x%04Xu, g_cpu.D[%d], g_cpu.A[%d])); return;\n",
+-                        base, ext, xreg, xreg);
++                fprintf(f, "    default:\n");
++                { char target[160];
++                  snprintf(target, sizeof target, "0x%08Xu + m68k_brief_index_value(0x%04Xu, g_cpu.D[%d], g_cpu.A[%d])", base, ext, xreg, xreg);
++                  emit_split_tail_call_expr(f, "      ", target, *has_sp_adjust != 0, -1); }
+                 fprintf(f, "  }\n");
+             } else if (not_ >= 1) {
+                 /* Case (b): offset-table dispatch — `dc.w (target - base)`
+@@ -2359,9 +2360,10 @@ static void emit_instr(FILE *f, const GenesisRom *rom,
+                     fprintf(f, "    case %d: goto label_%06X;\n",
+                             ot_offsets[t], ot_targets[t]);
+                 } }
+-                fprintf(f, "    default: hybrid_jmp_interpret(0x%08Xu + "
+-                        "m68k_brief_index_value(0x%04Xu, g_cpu.D[%d], g_cpu.A[%d])); return;\n",
+-                        base, ext, xreg, xreg);
++                fprintf(f, "    default:\n");
++                { char target[160];
++                  snprintf(target, sizeof target, "0x%08Xu + m68k_brief_index_value(0x%04Xu, g_cpu.D[%d], g_cpu.A[%d])", base, ext, xreg, xreg);
++                  emit_split_tail_call_expr(f, "      ", target, *has_sp_adjust != 0, -1); }
+                 fprintf(f, "  }\n");
+             } else {
+                 /* Case (c): nothing recognised — fall back to runtime dispatch. */
+@@ -2369,11 +2371,13 @@ static void emit_instr(FILE *f, const GenesisRom *rom,
+                              JMPAUDIT_FALLBACK_HYBRID, 0);
+                 fprintf(f, "  /* JMP table at $%06X: interpret handler at base $%06X + %s[%d] */\n",
+                         instr->addr, base, xr + 6 /* skip "g_cpu." */, xreg);
+-                emit_cycle_accounting(f, "  ", estimate_cycles(instr));
+-                fprintf(f, "  hybrid_jmp_interpret(0x%08Xu + "
+-                        "m68k_brief_index_value(0x%04Xu, g_cpu.D[%d], g_cpu.A[%d]));\n",
+-                        base, ext, xreg, xreg);
+-                fprintf(f, "  return;\n");
++                /* An indexed JMP continues this same guest stack frame.
++                 * Carry pushes across the extracted handlers, just as for
++                 * static tails; otherwise their shared MOVEM/RTS epilogue
++                 * mistakes restored registers for discarded return slots. */
++                { char target[160];
++                  snprintf(target, sizeof target, "0x%08Xu + m68k_brief_index_value(0x%04Xu, g_cpu.D[%d], g_cpu.A[%d])", base, ext, xreg, xreg);
++                  emit_split_tail_call_expr(f, "  ", target, *has_sp_adjust != 0, estimate_cycles(instr)); }
+             }
+         } else {
+             audit_record(instr->addr, func_addr, 0,

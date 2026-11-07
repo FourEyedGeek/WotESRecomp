@@ -1,0 +1,307 @@
+diff --git a/runner/glue.c b/runner/glue.c
+index 2bd6edc..73c9414 100644
+--- a/runner/glue.c
++++ b/runner/glue.c
+@@ -657,6 +657,14 @@ static uint32_t s_main_cpu_stalls;
+ static int s_irq_in_progress = 0; /* also excludes interleaved IRQs from acceleration */
+ static int     s_game_yielded_vblank = 0;
+ static int s_state_requested,s_state_parked;
++void glue_save_checkpoint(uint32_t pc)
++{
++    if (!s_state_requested || s_in_vblank_service || s_irq_in_progress) return;
++    g_cpu.PC = pc & 0xFFFFFFu;
++    s_state_parked = 1;
++    s_game_yielded_vblank = 1;
++    yield_to_main(GLUE_YIELD_VBLANK);
++}
+ void glue_state_boundary_request(int requested)
+ { s_state_requested=requested; if (!requested) s_state_parked=0; }
+ int glue_state_boundary_ready(void)
+diff --git a/runner/glue.h b/runner/glue.h
+index 78f00b8..f8a8727 100644
+--- a/runner/glue.h
++++ b/runner/glue.h
+@@ -39,6 +39,8 @@ void glue_load_state(FILE *sf);
+  * fiber IN PLACE (same engine-owned stack; see fiber_compat.h). Must be
+  * called from the scheduler (main) fiber. */
+ void glue_restart_game_fiber(uint32_t resume_pc);
++/* Adapter instruction-entry checkpoint; parks only for a pending file save. */
++void glue_save_checkpoint(uint32_t pc);
+ 
+ /* Scheduler rule (see glue.c): the same-address spin streak and the Z80
+  * sync-poll streak restart at every wall-frame boundary. The tick driver
+diff --git a/runner/host_state.h b/runner/host_state.h
+index e1b7ea7..9dedf9c 100644
+--- a/runner/host_state.h
++++ b/runner/host_state.h
+@@ -5,8 +5,19 @@ enum { HOST_STATE_SECTIONS=6, HOST_STATE_LIMIT=32*1024*1024 };
+ extern uint8_t g_ram[65536];
+ extern uint8_t g_rom[0x400000];
+ static Uint32 host_state_notice_until;
++static char host_state_message[128];
++static int host_state_slot;
+ static void host_state_notice(const char *message)
+ {
++    snprintf(host_state_message,sizeof host_state_message,"%s",message);
++    if (host_state_slot && (!strcmp(message,"State saved") || !strcmp(message,"State loaded")))
++        snprintf(host_state_message,sizeof host_state_message,"State %d %s",host_state_slot,
++                 !strcmp(message,"State saved")?"saved":"loaded");
++#if WOTES_QUICK_STATES
++    if (host_state_slot && !strncmp(message,"Load rejected",13))
++        snprintf(host_state_message,sizeof host_state_message,"State %d empty or incompatible",host_state_slot);
++#endif
++    host_state_notice_until=SDL_GetTicks()+3000;
+ #if RECOMP_LAUNCHER
+     if (s_runtime_ui.window) {
+         char title[256]; snprintf(title,sizeof title,"%s - %s",g_game_spec.display_name,message);
+@@ -78,9 +89,13 @@ static int host_state_save_now(const char *path)
+ }
+ static char host_state_pending[512];
+ static unsigned host_state_pending_frames;
++static int host_state_pending_slot;
+ static int host_state_save(const char *path)
+ {
+-    if (strlen(path)>=sizeof host_state_pending || *host_state_pending) return 0;
++    if (strlen(path)>=sizeof host_state_pending || *host_state_pending) {
++        host_state_notice("Save already in progress"); return 0;
++    }
++    host_state_pending_slot=host_state_slot;
+     strcpy(host_state_pending,path); host_state_pending_frames=0;
+     glue_state_boundary_request(1);
+     fprintf(stderr,"[SAVE] queued for the next completed gameplay tick: %s\n",path);
+@@ -97,6 +112,7 @@ static void host_state_tick(void)
+ #endif
+     if (!*host_state_pending) return;
+     if (glue_state_boundary_ready()) {
++        host_state_slot=host_state_pending_slot;
+         host_state_save_now(host_state_pending);
+     } else if (++host_state_pending_frames<120) return;
+     else { host_state_notice("Save unavailable in the current game mode");
+diff --git a/runner/main.c b/runner/main.c
+index ba42d2f..ff57563 100644
+--- a/runner/main.c
++++ b/runner/main.c
+@@ -1231,6 +1231,21 @@ static const char *resolve_runner_path(const char *path, char *buf, size_t buf_l
+  * and GROWNS2 saves are rejected with a clear message rather than misloaded. */
+ static const char OWN_SAVE_MAGIC[8] = "GROWNS3\0";
+ #include "host_state.h"
++#if WOTES_QUICK_STATES
++#include "overlay_draw.h"
++static void wotes_state_toast(SDL_Renderer *renderer)
++{
++    if (!host_state_notice_until || (Sint32)(SDL_GetTicks()-host_state_notice_until)>=0) return;
++    uint32_t pixels[260*16];
++    gen_ovl_fill_rect(pixels,260,16,0,0,260,16,0xFF14202Bu);
++    gen_ovl_draw_text(pixels,260,16,5,4,host_state_message,0xFFFFFFFFu,1);
++    SDL_Texture *t=SDL_CreateTexture(renderer,SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STATIC,260,16);
++    if (t) {
++        SDL_UpdateTexture(t,NULL,pixels,260*4);
++        SDL_Rect r={8,8,260,16}; SDL_RenderCopy(renderer,t,NULL,&r); SDL_DestroyTexture(t);
++    }
++}
++#endif
+ 
+ int runner_save_state_file(const char *path)
+ {
+@@ -1273,7 +1288,16 @@ int runner_load_state_file(const char *path)
+     char full_path[512];
+     const char *resolved = resolve_runner_path(path, full_path, sizeof(full_path));
+     if (g_game_spec.state_size) {
++#if WOTES_QUICK_STATES
++        /* A state restores gameplay, while the current cartridge's separate
++         * Camp Save slots stay exactly as they were before the load. */
++        uint8_t battery[GENESIS_SRAM_CAPACITY];
++        memcpy(battery,g_machine.bus.sram,sizeof battery);
++#endif
+         int ok = host_state_load(resolved);
++#if WOTES_QUICK_STATES
++        memcpy(g_machine.bus.sram,battery,sizeof battery);
++#endif
+         if (ok) {
+             genesis_local_states_clear();
+             if (g_game_spec.on_state_loaded) g_game_spec.on_state_loaded();
+@@ -3169,6 +3193,7 @@ int main(int argc, char *argv[])
+     gbus_sram_set_geometry(&g_machine.bus,
+                            g_game_spec.sram_start, g_game_spec.sram_end);
+     runner_sram_init_and_load(rom_path);
++    if (g_game_spec.on_post_reset) g_game_spec.on_post_reset();
+ 
+ #if GENESIS_HAS_RECOMP_NET
+     genesis_identity_sha256(rom_raw, rom_raw_len, s_rom_sha256);
+@@ -3435,7 +3460,7 @@ session_begin:;
+     (void)window_pump_init(window);
+     int running = 1;
+     int window_close_requested = 0;
+-    int turbo   = start_turbo;   /* F5 toggles turbo (uncapped frame rate, no audio) */
++    int turbo   = start_turbo;   /* Tab holds turbo (uncapped frame rate, no audio). */
+     uint32_t prev_overlay_pad = 0;
+     genesis_local_states_configure(*s_data_dir?s_data_dir:s_exe_dir, g_app_config.rewind_enabled &&
+                                    (!g_game_spec.state_unavailable_reason ||
+@@ -3533,6 +3558,18 @@ session_begin:;
+ #endif
+             if (ev.type == SDL_QUIT) { running = 0; window_close_requested = 1; break; }
+             if (ev.type == SDL_KEYDOWN) {
++#if WOTES_QUICK_STATES
++                if (!ev.key.repeat && ev.key.keysym.sym>=SDLK_F1 && ev.key.keysym.sym<=SDLK_F8) {
++                    int index=ev.key.keysym.sym-SDLK_F1;
++                    int slot=index%4+1;
++                    char path[48]; snprintf(path,sizeof path,"state_%d.bin",slot);
++                    host_state_slot=slot;
++                    if (index<4) runner_save_state_file(path);
++                    else runner_load_state_file(path);
++                    continue;
++                }
++                if (ev.key.keysym.sym>=SDLK_F1 && ev.key.keysym.sym<=SDLK_F8) continue;
++#endif
+                 if (!ev.key.repeat && !(ev.key.keysym.mod & (KMOD_SHIFT | KMOD_CTRL)) &&
+                     ev.key.keysym.sym == SDLK_F7) {
+                     overlay_request = 2; continue;
+@@ -4158,6 +4195,9 @@ session_begin:;
+             peer_view_was_active = peer_view_is_active;
+         }
+         SDL_RenderCopy(renderer, frame_texture, &src, NULL);
++#if WOTES_QUICK_STATES
++        wotes_state_toast(renderer);
++#endif
+ #if GENESIS_HAS_RECOMP_NET
+         /* Process the peer INPUT and emit our CONFIRM before the blocking
+          * present, so confirmation delivery overlaps vsync as well. */
+diff --git a/runner/rb_state.c b/runner/rb_state.c
+index 6e4659a..6b7341b 100644
+--- a/runner/rb_state.c
++++ b/runner/rb_state.c
+@@ -40,8 +40,18 @@ _Static_assert(sizeof(g_ram) == 0x10000, "work RAM size changed");
+ #if UINTPTR_MAX == 0xFFFFFFFFFFFFFFFFu
+ /* 64-bit layouts (the host pointers inside are scrubbed by machine_rb_save). */
+ _Static_assert(sizeof(GVDP) == 65824, "GVDP changed: review machine_rb_save (pointers) and rb_state");
+-_Static_assert(sizeof(GenesisBus) == 24664, "GenesisBus changed: review machine_rb_save and rb_state");
+-_Static_assert(sizeof(GenesisMachine) == 90576, "GenesisMachine changed: review machine_rb_save and rb_state");
++/* The optional larger SRAM is pointer-free simulation state. machine_rb_save
++ * copies the complete machine and scrubs host pointers by named fields;
++ * machine_rb_load validates that complete image's size before copying it. */
++_Static_assert(GENESIS_SRAM_CAPACITY >= 0x4000 && GENESIS_SRAM_CAPACITY % 8 == 0,
++               "SRAM capacity must preserve the pinned layout alignment");
++#if GENESIS_YM_TIMER_A
++#define YM_TIMER_A_STATE_BYTES 24
++#else
++#define YM_TIMER_A_STATE_BYTES 0
++#endif
++_Static_assert(sizeof(GenesisBus) == 24664 + GENESIS_SRAM_CAPACITY - 0x4000 + YM_TIMER_A_STATE_BYTES, "GenesisBus changed: review machine_rb_save and rb_state");
++_Static_assert(sizeof(GenesisMachine) == 90576 + GENESIS_SRAM_CAPACITY - 0x4000 + YM_TIMER_A_STATE_BYTES, "GenesisMachine changed: review machine_rb_save and rb_state");
+ #endif
+ 
+ /* ---- sections ---------------------------------------------------------------- */
+diff --git a/runner/video/genesis_bus.c b/runner/video/genesis_bus.c
+index c7d3a9c..0152542 100644
+--- a/runner/video/genesis_bus.c
++++ b/runner/video/genesis_bus.c
+@@ -80,6 +80,13 @@ static uint64_t ym_abs_68k_stamp(void)
+ 
+ static void ym_timer_update(GenesisBus *b, uint64_t now)
+ {
++#if GENESIS_YM_TIMER_A
++    if(b->ym_timer_a_running && b->ym_timer_a_period && now>=b->ym_timer_a_deadline) {
++        if(b->ym_mode&0x04u)b->ym_status|=0x01u;
++        uint64_t periods=(now-b->ym_timer_a_deadline)/b->ym_timer_a_period+1u;
++        b->ym_timer_a_deadline+=periods*b->ym_timer_a_period;
++    }
++#endif
+     if (!b->ym_timer_b_running || b->ym_timer_b_period == 0 ||
+         now < b->ym_timer_b_deadline)
+         return;
+@@ -106,11 +113,28 @@ static void ym_write_side_effect(GenesisBus *b, uint8_t port, uint8_t val,
+     if (bank != 0) return;              /* timers live in register bank 0 */
+ 
+     uint8_t reg = b->ym_addr[0];
++#if GENESIS_YM_TIMER_A
++    if(reg==0x24u || reg==0x25u) {
++        if(reg==0x24u)b->ym_timer_a=(uint16_t)((b->ym_timer_a&3u)|((unsigned)val<<2));
++        else b->ym_timer_a=(uint16_t)((b->ym_timer_a&0x3FCu)|(val&3u));
++        /* OPN2 timer A: 24 operators * prescale 6; YM = master / 7. */
++        b->ym_timer_a_period=(uint64_t)(1024u-b->ym_timer_a)*144u*7u;
++    }
++#endif
+     if (reg == 0x26u) {
+         b->ym_timer_b = val;
+         b->ym_timer_b_period =
+             (uint64_t)(256u - (unsigned)val) * YM_TIMER_B_MASTER_TICK;
+     } else if (reg == 0x27u) {
++#if GENESIS_YM_TIMER_A
++        if(val&1u) {
++            if(!b->ym_timer_a_running) {
++                if(!b->ym_timer_a_period)b->ym_timer_a_period=(uint64_t)(1024u-b->ym_timer_a)*144u*7u;
++                b->ym_timer_a_deadline=now+b->ym_timer_a_period;
++            }
++            b->ym_timer_a_running=1;
++        } else b->ym_timer_a_running=0;
++#endif
+         /* Bits 4/5 clear timer A/B flags; bit 1 loads/runs timer B; bit 3
+          * enables its overflow flag. RKA writes $3C (clear/stop), updates
+          * $26, then writes $3A (clear/load/run). */
+diff --git a/runner/video/genesis_bus.h b/runner/video/genesis_bus.h
+index a1fafbd..8d07fa0 100644
+--- a/runner/video/genesis_bus.h
++++ b/runner/video/genesis_bus.h
+@@ -14,6 +14,12 @@
+ #include <stdint.h>
+ #include "genesis_vdp.h"
+ 
++/* Larger cartridges may opt in without changing the default snapshot ABI
++ * for existing builds. All runner translation units must use the same value. */
++#ifndef GENESIS_SRAM_CAPACITY
++#define GENESIS_SRAM_CAPACITY 0x4000
++#endif
++
+ /* Pad button bits (1 = pressed) in our internal representation. Low byte is the
+  * 3-button set; the high nibble is the 6-button extension (X/Y/Z/Mode), surfaced
+  * by pad_read() only when the port is configured PAD_6BUTTON. MUST stay in sync
+@@ -49,6 +55,12 @@ typedef struct GenesisBus {
+     uint8_t  ym_timer_b_running;
+     uint64_t ym_timer_b_deadline;       /* absolute scheduler master cycles    */
+     uint64_t ym_timer_b_period;         /* cached period in master cycles      */
++#if GENESIS_YM_TIMER_A
++    uint16_t ym_timer_a;                /* registers $24/$25, 10 bits           */
++    uint8_t ym_timer_a_running;
++    uint64_t ym_timer_a_deadline;
++    uint64_t ym_timer_a_period;
++#endif
+ 
+     /* Controllers / I-O. */
+     uint16_t pad[2];                    /* live button state (GPAD_* bits, 12) */
+@@ -67,7 +79,7 @@ typedef struct GenesisBus {
+      * odd/even/both layouts uniformly. (S3K lock-on declares no "RA" header —
+      * its SRAM support will need a spec-driven override when the combined
+      * target is brought up.) */
+-    uint8_t  sram[0x4000];              /* raw bus bytes from sram_base       */
++    uint8_t  sram[GENESIS_SRAM_CAPACITY]; /* raw bus bytes from sram_base      */
+     uint32_t sram_base;                 /* sram_start & ~1                    */
+     uint32_t sram_end;                  /* inclusive end address              */
+     uint32_t sram_size;                 /* bytes spanned (0 = none)           */
+diff --git a/runner/video/genesis_machine.c b/runner/video/genesis_machine.c
+index 98bdc59..b70424a 100644
+--- a/runner/video/genesis_machine.c
++++ b/runner/video/genesis_machine.c
+@@ -545,7 +545,13 @@ void machine_run_frame_ex(GenesisScanlineSink sink, void *user,
+         step_z80(m, Z80_PER_LINE);
+ 
+         /* Deliver interrupts to the 68K (and the Z80 at vblank). */
++#if GENESIS_Z80_INDEPENDENT_VINT
++        /* Z80 frame timing remains active when the cartridge disables the
++         * separate 68000 V-int output in VDP register 1. */
++        if (line == active_h) {
++#else
+         if (irq & GVDP_IRQ_VBLANK) {
++#endif
+             /* Assert the Z80 vblank IRQ and LEAVE it pending — the Z80 takes it
+              * on a later step_z80 (when IFF1 is enabled) and superzazu clears
+              * int_pending on accept. The old code de-asserted immediately with
+@@ -572,8 +578,8 @@ void machine_run_frame_ex(GenesisScanlineSink sink, void *user,
+ #else
+             m->z80.int_pending = 1;   /* level-triggered vblank IRQ assert */
+ #endif
+-            glue_own_interrupt(6, &m->vdp);
+         }
++        if (irq & GVDP_IRQ_VBLANK) glue_own_interrupt(6, &m->vdp);
+ 
+         /* Render + emit active scanlines. In interlace mode 2 each raster
+          * line yields TWO output rows (the even and odd fields' lines,
