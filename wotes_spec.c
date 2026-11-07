@@ -4,6 +4,7 @@
 #include "wotes_video.h"
 #include "wotes_automap.h"
 #include "wotes_floor_items.h"
+#include "wotes_menu.h"
 #include "glue.h"
 #include "m68k_interp.h"
 #include <stdlib.h>
@@ -45,6 +46,7 @@ static int native_entry(uint32_t pc) {
 }
 extern void recomp_tail_frame_set(void *frame);
 extern int g_split_sp_popped;
+extern int genesis_force_interp(void);
 static size_t state_size(void) { return sizeof(WotesState); }
 static int state_save(void *data, size_t size) {
     if (size != sizeof(WotesState)) return 0;
@@ -70,7 +72,7 @@ static void resume_state(uint32_t unused) {
     recomp_tail_frame_set(NULL); g_split_sp_popped = 0; g_rte_pending = 0;
     for (;;) {
         uint32_t pc = g_cpu.PC & 0xFFFFFFu;
-        if (native_entry(pc)) {
+        if (native_entry(pc) && !genesis_force_interp()) {
             g_split_sp_popped = 0;
             recomp_call_addr(pc);
             /* Native RTS leaves the guest return for its generated caller. */
@@ -139,7 +141,7 @@ static int game_instruction_hook(uint32_t pc) {
         s_inscription_buttons = held;
     }
     const char *show = getenv("WOTES_SHOW_INTRO");
-    if (show && strcmp(show, "1") == 0) return 0;
+    if (show ? strcmp(show,"1")==0 : wotes_menu_intro_enabled()) return 0;
     if (pc == 0x022468u) return 1;
     if (pc == 0x01675Cu) {
         g_cpu.SR |= SR_C;
@@ -158,7 +160,7 @@ static void frame_post(uint64_t frame) { wotes_automap_tick(frame); wotes_video_
 const GameSpec g_game_spec = {
     .video = &wotes_video,
     .video_default = "16:9",
-    .display_name = "Warriors of the Eternal Sun - WotESRecomp v0.10",
+    .display_name = "Warriors of the Eternal Sun - WotESRecomp v0.20.0",
     .short_name = "WotES",
     .expected_rom_crc32 = WOTES_ROM_CRC,
     .expected_rom_size = 0x200000u,
@@ -170,7 +172,7 @@ const GameSpec g_game_spec = {
     .on_frame_post = frame_post,
     .sram_loaded = wotes_automap_load,
     .on_state_loaded = wotes_automap_reset_position,
-    .state_build_id = "wotes-v0.10-states-v1",
+    .state_build_id = "wotes-v0.20-states-v1",
     .state_size = state_size,
     .state_save = state_save,
     .state_load = state_load,

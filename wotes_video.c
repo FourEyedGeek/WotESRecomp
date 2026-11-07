@@ -1,5 +1,6 @@
 #include "wotes_video.h"
 #include "wotes_automap.h"
+#include "wotes_shop.h"
 #include "genesis_runtime.h"
 #include "video/genesis_machine.h"
 #include "video/genesis_dac.h"
@@ -160,7 +161,11 @@ static void scanline(const GVDP *v,int line,const uint32_t *native,int native_wi
                      uint32_t *out,int canvas)
 {
     for(int x=0;x<canvas;++x)out[x]=0xFF000000u;
-    if(line==0)s_scene=wotes_automap_scene(v)?2:qualify(v);
+    if(line==0)s_scene=wotes_shop_scene(v)?3:wotes_automap_scene(v)?2:qualify(v);
+    if(native_width==320 && canvas==WIDE_WIDTH && s_scene==3) {
+        wotes_shop_row(line,native,out);
+        return;
+    }
     if(native_width==320 && canvas==WIDE_WIDTH && s_scene==2) {
         wotes_automap_row(line,native,out);
         return;

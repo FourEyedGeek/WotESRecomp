@@ -1,3 +1,11 @@
+# v0.20.0 status
+
+Application startup/pause menus, keyboard/controller remapping, persisted
+intro/display/audio settings, menu-based state slots, F5/F6 quick actions and
+an initial widescreen shop comparison panel are implemented. The broader
+roadmap below records goals; completion is limited to the behavior described
+in README.md and CHANGELOG.md.
+
 # Warriors of the Eternal Sun port roadmap
 
 Proposed scope for WotESRecomp. This is a planning checklist, not a promise

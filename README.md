@@ -1,4 +1,4 @@
-# WotESRecomp â€” v0.10 preview
+# WotESRecomp - v0.20.0 preview
 
 A Windows recompilation project for Dungeons & Dragons: Warriors of the
 Eternal Sun, built with [GenesisRecomp](https://github.com/mstan/segagenesisrecomp).
@@ -6,7 +6,7 @@ This is an unofficial early preview, not a complete-game compatibility guarantee
 
 ## Source-only preview
 
-v0.10 publishes the handwritten integration, configuration and engine patches.
+v0.20.0 publishes the handwritten integration, configuration and engine patches.
 There is no precompiled game download in this release. Build locally using your
 own supported ROM, following the instructions below. ROMs, extracted game assets,
 generated game translations, saves and diagnostic recordings are not included.
@@ -23,47 +23,77 @@ The cartridge patch must be obtained and applied separately.
 
 ## Features
 
-- Widescreen top-down exploration with the party panel at the right.
-- Wide overhead dialogue and combat reward messages.
-- Original first-person scene plus a persistent exploration automap on the left.
-- Music and sound effects, intro skipping, and four independent save states.
-- Fixes for dungeon transitions, inscription dismissal, targeting action icons,
-  and the gauntlets floor/pickup artwork.
-- Normal starting ability scores in the release build.
+- Startup menu: Start Game, Load State, Settings and Exit.
+- Pause menu: Resume, Save State, Load State, Reset Game, Settings and Exit.
+- Keyboard/controller remapping, controller hotplug support and dead-zone settings.
+- Remembered settings for 4:3/16:9, fullscreen, volume/mute and the game intro.
+- Four manual save-state slots plus an independent Quick Save slot.
+- Widescreen overhead exploration, dialogue and combat reward messages.
+- Persistent dungeon automap on the left, with a green starting tile.
+- Widescreen shops with per-character armour/shield and normal weapon comparisons.
+- Music and sound effects; the earlier transition, inscription, targeting and item-art fixes.
+- Fixed missing Camp/Inventory cursors and skipped Camp actions after loading during Rest Party.
+- Original starting ability scores by default; development-only all-18 stats are disabled.
 
 ## Controls
 
-| Action | Keyboard |
+| Action | Default keyboard input |
 |---|---|
-| Move / navigate | Arrow keys |
+| Move / original game menus | Arrow keys |
 | Genesis A / B / C | Z / X / C |
-| Start / camp | Enter |
-| Save state slots 1â€“4 | F1 / F2 / F3 / F4 |
-| Load state slots 1â€“4 | F5 / F6 / F7 / F8 |
+| Start / original Camp menu | Enter |
+| Application pause menu / back | Esc |
+| Quick Save / Quick Load | F5 / F6 |
+| Manual save/load slots | Application Save State / Load State menus |
 | Fullscreen | F11 or Alt+Enter |
-| Turbo, without audio | Hold Tab |
+| Silent turbo | Hold Tab |
 
-## Progress
+Application menus also support the mouse and a controller. Controller Back/View
+opens pause; the south face button selects and the east face button goes back.
+Application menu navigation stays fixed when game controls are remapped.
+F1–F8 no longer act as the old numbered save/load shortcuts.
 
-In-game saves use a `.srm` file named after the ROM beside the executable by
-default. Automap discoveries use its `.automap` sidecar. File states use
-`state_1.bin` through `state_4.bin`. Loading a state preserves the current
-in-game save slots; automap exploration remains cumulative.
-Saving again replaces that state slot. Back up progress before changing versions.
-State files are version-specific. Earlier experimental states are not accepted
-by v0.10; normal in-game battery saves retain their existing format.
+## Shops
 
-## Limitations
+In 16:9, the original shop image sits on the left. The added right panel compares
+each party member with the highlighted item. Armour/shields show current and
+prospective AC; lower is better. Weapons compare the readied A weapon, or B when
+A is not a weapon, with the highlighted weapon's damage and hit chance against
+an ordinary **AC 0** opponent. Real enemy defences and special effects can change
+these results. Conditional enchantments are marked as enemy dependent. Class
+restrictions and improvement/downgrade colours are shown. Browsing comparisons
+does not equip or purchase an item.
 
-Windows x64 is the current release target. A complete beginning-to-ending
-playthrough has not been verified. First-person rendering retains its original
-view; the wider layout adds the automap rather than revealing extra wall geometry.
-Some menus retain the original layout and borders. Full input-remapping UI,
-mobile versions, mod tools and a map editor are future work. Sound accuracy
-still needs broader comparison with a reference implementation.
+## Progress and compatibility
 
-See [ROADMAP.md](ROADMAP.md) for proposed work. Report a bug with the version,
-scene and reproduction steps. Do not upload a ROM or private diagnostic files.
+In-game battery saves remain separate from file save states. The battery save
+uses a ROM-named `.srm`; the automap uses its `.automap` sidecar. Manual states
+use `state_1.bin` through `state_4.bin`; Quick Save uses `quick_state.bin`.
+Loading a state preserves current battery slots and cumulative automap progress.
+The menus provide overwrite confirmation and reject empty/damaged slots.
+Settings are remembered in `settings.ini`. Intro changes apply on the next
+Start or Reset.
+
+Back up progress before changing versions. v0.20.0 has a new file-state build
+identifier and does not accept v0.10 or private-preview state files. Normal
+in-game battery saves retain their existing format. Existing characters keep
+the stats stored in their saves.
+
+## Validation and limitations
+
+Automated local checks cover manual/quick state menus, rejected loads, independent
+quick saves, shop comparisons, preservation of original shop pixels and game RAM,
+4:3 presentation, and the reproduced Rest Party/Quick Load Camp-menu failure.
+Input settings were also tested with a virtual controller; broader physical
+controller and sound-accuracy testing remains useful.
+
+Windows x64 is the verified target. A complete beginning-to-ending playthrough
+has not been verified. First-person rendering keeps its original view and adds
+an automap. Some game screens keep the original layout and borders. Conditional
+shop enchantment comparisons, other platforms, mod management and a map editor
+remain future work. See [CHANGELOG.md](CHANGELOG.md) and [ROADMAP.md](ROADMAP.md).
+Bug reports should include the version and reproduction steps. Do not upload
+ROMs or private saves/diagnostic recordings.
 
 ## Build from source
 

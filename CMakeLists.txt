@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project(WotESRecomp VERSION 0.10.0 LANGUAGES C CXX)
+project(WotESRecomp VERSION 0.20.0 LANGUAGES C CXX)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 option(WOTES_TEST_PARTY_STATS "Testing only: new characters have six ability scores of 18" OFF)
@@ -10,9 +10,10 @@ find_package(SDL2 REQUIRED CONFIG NO_DEFAULT_PATH PATHS "${SDL2_BUNDLED}/cmake")
 include("${RECOMP_ROOT}/cmake/GenesisRecompGenerated.cmake")
 genesisrecomp_add_generated_sources(GENERATED wotes "${CMAKE_CURRENT_SOURCE_DIR}" "local/wotes.md" REVERSE_DEBUG OFF)
 genesisrecomp_runner_sources(RUNNER TRACE ON REVERSE_DEBUG OFF)
-add_executable(WotESRecomp ${RUNNER} ${GENERATED} wotes_spec.c wotes_video.c wotes_automap.c wotes_floor_items.c)
+add_executable(WotESRecomp ${RUNNER} ${GENERATED} wotes_spec.c wotes_video.c wotes_automap.c wotes_floor_items.c wotes_menu.c wotes_shop.c wotes_shop_eval.c)
 add_dependencies(WotESRecomp ${GENERATED_SOURCES_TARGET})
 target_include_directories(WotESRecomp PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}"
     "${RUNNER_ROOT}" "${RUNNER_ROOT}/include" "${RUNNER_ROOT}/video"
     "${RUNNER_ROOT}/external/ymfm/src" "${RUNNER_ROOT}/external/superzazu"
     "${RUNNER_ROOT}/external/clowncommon" "${RECOMP_ROOT}/recompiler/src")
@@ -26,4 +27,5 @@ target_compile_definitions(WotESRecomp PRIVATE GENESIS_SRAM_CAPACITY=0x10000)
 target_compile_definitions(WotESRecomp PRIVATE GENESIS_Z80_INDEPENDENT_VINT=1)
 target_compile_definitions(WotESRecomp PRIVATE GENESIS_YM_TIMER_A=1)
 target_compile_definitions(WotESRecomp PRIVATE WOTES_QUICK_STATES=1)
+target_compile_definitions(WotESRecomp PRIVATE WOTES_MENU_PREVIEW=1)
 target_compile_definitions(WotESRecomp PRIVATE WOTES_TEST_PARTY_STATS=$<BOOL:${WOTES_TEST_PARTY_STATS}>)
