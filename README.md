@@ -1,4 +1,4 @@
-# WotESRecomp — v0.10 preview
+# WotESRecomp â€” v0.10 preview
 
 A Windows recompilation project for Dungeons & Dragons: Warriors of the
 Eternal Sun, built with [GenesisRecomp](https://github.com/mstan/segagenesisrecomp).
@@ -11,7 +11,12 @@ There is no precompiled game download in this release. Build locally using your
 own supported ROM, following the instructions below. ROMs, extracted game assets,
 generated game translations, saves and diagnostic recordings are not included.
 
-The current target requires the 2,097,152-byte USA/Europe Chili-patched ROM:
+This port targets **(ROM Patch) Dungeons & Dragons: Warriors of the Eternal Sun,
+V2.0**, by **PlanetChili** ([planetchili/wotes_patch](https://github.com/planetchili/wotes_patch)).
+Get the patch from the [official V2.0 release](https://github.com/planetchili/wotes_patch/releases/tag/V2.0)
+and apply it separately to your own USA/Europe ROM.
+
+The resulting supported ROM is 2,097,152 bytes:
 CRC32 `405ed24b`, SHA-1 `2380b201b872f7bd2c66f2a4d82df86709332d55`.
 An unpatched ROM or a different patch revision is not supported by this build.
 The cartridge patch must be obtained and applied separately.
@@ -33,8 +38,8 @@ The cartridge patch must be obtained and applied separately.
 | Move / navigate | Arrow keys |
 | Genesis A / B / C | Z / X / C |
 | Start / camp | Enter |
-| Save state slots 1–4 | F1 / F2 / F3 / F4 |
-| Load state slots 1–4 | F5 / F6 / F7 / F8 |
+| Save state slots 1â€“4 | F1 / F2 / F3 / F4 |
+| Load state slots 1â€“4 | F5 / F6 / F7 / F8 |
 | Fullscreen | F11 or Alt+Enter |
 | Turbo, without audio | Hold Tab |
 
@@ -74,7 +79,8 @@ Existing characters keep the stats stored in their saves.
 ## Credits and licensing
 
 GenesisRecomp and the shared recompiler: Matthew Stan and upstream contributors.
-The supported cartridge changes come from the Chili patch. The original game
+The supported cartridge changes come from **PlanetChili's Warriors of the Eternal Sun
+ROM patch V2.0**. Credit and patch downloads: [planetchili/wotes_patch](https://github.com/planetchili/wotes_patch/releases/tag/V2.0). The original game
 is by Westwood Associates; its game content is not licensed by this project.
 Project-authored integration code and modifications are offered under
 [PolyForm Noncommercial 1.0.0](LICENSE.md). Existing upstream code retains its
