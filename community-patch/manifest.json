@@ -1,0 +1,99 @@
+{
+  "source_sha1": "2380b201b872f7bd2c66f2a4d82df86709332d55",
+  "source_crc32": "405ed24b",
+  "target_sha1": "0755b029387e17f588a00d1b74bfb4230efea7e8",
+  "target_crc32": "34c1b865",
+  "art_address": 1114880,
+  "changes": [
+    {
+      "address": "110000",
+      "bytes": 46,
+      "purpose": "Check all five active stench timers; preserve D2/A1"
+    },
+    {
+      "address": "110080",
+      "bytes": 30,
+      "purpose": "Include stench presence in the display cache without modifying actor flags"
+    },
+    {
+      "address": "110100",
+      "bytes": 46,
+      "purpose": "Show STENCH only when no higher-priority negative label is selected"
+    },
+    {
+      "address": "006344",
+      "bytes": 6,
+      "purpose": "Call cartridge helper"
+    },
+    {
+      "address": "00648A",
+      "bytes": 6,
+      "purpose": "Call cartridge helper"
+    },
+    {
+      "address": "110280",
+      "bytes": 7,
+      "purpose": "Six-character original-font condition label"
+    },
+    {
+      "address": "100278",
+      "bytes": 6,
+      "purpose": "Sign-extend attack modifiers instead of zero-extending them"
+    },
+    {
+      "address": "110300",
+      "bytes": 192,
+      "purpose": "Inventory gauntlets artwork and two distance variants"
+    },
+    {
+      "address": "110180",
+      "bytes": 30,
+      "purpose": "Select gauntlets dungeon floor art using the actual item ID"
+    },
+    {
+      "address": "01FB60",
+      "bytes": 6,
+      "purpose": "Call cartridge helper"
+    },
+    {
+      "address": "110400",
+      "bytes": 96,
+      "purpose": "Original eleven sprite uploads plus a separate four-tile gauntlet icon"
+    },
+    {
+      "address": "110200",
+      "bytes": 10,
+      "purpose": "Load twelve sprite art records"
+    },
+    {
+      "address": "01EA2A",
+      "bytes": 6,
+      "purpose": "Call cartridge helper"
+    },
+    {
+      "address": "110500",
+      "bytes": 168,
+      "purpose": "Preserve original sprite descriptors; append a gauntlet-only descriptor"
+    },
+    {
+      "address": "110240",
+      "bytes": 10,
+      "purpose": "Resolve relocated sprite descriptor table"
+    },
+    {
+      "address": "01EAB0",
+      "bytes": 8,
+      "purpose": "Use extended sprite descriptor table"
+    },
+    {
+      "address": "01EB4A",
+      "bytes": 1,
+      "purpose": "Map only item129 to its own ground and pickup descriptor"
+    },
+    {
+      "address": "00018E",
+      "bytes": 2,
+      "purpose": "Update the Genesis header checksum"
+    }
+  ]
+}
