@@ -1,4 +1,4 @@
-# Save states (v0.20.0)
+# Save states (v0.25.0)
 
 Use the application Save State / Load State menus for four manual slots.
 Replacing a manual slot asks for confirmation. Empty, damaged or incompatible
@@ -14,7 +14,7 @@ CPU, RAM, video and sound state. Current in-game battery-save slots are preserve
 the persistent automap remains cumulative. Save states are independent of the
 original game's Camp Save Game / Load Game system.
 
-v0.20.0 uses the build identifier wotes-v0.20-states-v1. Earlier public/private
+v0.25.0 uses the build identifier wotes-v0.25-states-v1. Earlier public/private
 preview states are not accepted; keep them with their matching executable.
 Normal in-game battery saves retain their existing format. Back up progress
 before changing versions.

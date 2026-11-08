@@ -1,4 +1,1 @@
-#pragma once
-void wotes_floor_items_init(void);
-void wotes_floor_items_select(void);
-void wotes_floor_item_pickup(int finished);
+/* Retired in v0.25: Community ROM v2.1 supplies the item artwork fixes. */

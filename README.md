@@ -1,4 +1,4 @@
-# WotESRecomp - v0.20.0 preview
+# WotESRecomp - v0.25.0 preview
 
 A Windows recompilation project for Dungeons & Dragons: Warriors of the
 Eternal Sun, built with [GenesisRecomp](https://github.com/mstan/segagenesisrecomp).
@@ -6,20 +6,20 @@ This is an unofficial early preview, not a complete-game compatibility guarantee
 
 ## Source-only preview
 
-v0.20.0 publishes the handwritten integration, configuration and engine patches.
+v0.25.0 publishes the handwritten integration, configuration and engine patches.
 There is no precompiled game download in this release. Build locally using your
 own supported ROM, following the instructions below. ROMs, extracted game assets,
 generated game translations, saves and diagnostic recordings are not included.
 
-This port targets **(ROM Patch) Dungeons & Dragons: Warriors of the Eternal Sun,
-V2.0**, by **PlanetChili** ([planetchili/wotes_patch](https://github.com/planetchili/wotes_patch)).
-Get the patch from the [official V2.0 release](https://github.com/planetchili/wotes_patch/releases/tag/V2.0)
-and apply it separately to your own USA/Europe ROM.
+This version requires **WotES Community Fixes v2.1**, our independent extension
+to **PlanetChili's Warriors of the Eternal Sun ROM Patch V2.0**.
+Apply Chili V2.0 first, then the included Community v2.1 BPS extension.
+See **[PATCHING.md](PATCHING.md)** for step-by-step instructions and checksums.
 
-The resulting supported ROM is 2,097,152 bytes:
-CRC32 `405ed24b`, SHA-1 `2380b201b872f7bd2c66f2a4d82df86709332d55`.
-An unpatched ROM or a different patch revision is not supported by this build.
-The cartridge patch must be obtained and applied separately.
+Supported ROM: 2,097,152 bytes, CRC32 `34C1B865`, SHA-1
+`0755b029387e17f588a00d1b74bfb4230efea7e8`.
+An unpatched ROM or Chili V2.0 without our extension is not supported by v0.25.0.
+The patch can also be used separately in an emulator; it does not add port features.
 
 ## Features
 
@@ -30,7 +30,10 @@ The cartridge patch must be obtained and applied separately.
 - Four manual save-state slots plus an independent Quick Save slot.
 - Widescreen overhead exploration, dialogue and combat reward messages.
 - Persistent dungeon automap on the left, with a green starting tile.
-- Widescreen shops with per-character armour/shield and normal weapon comparisons.
+- Widescreen shops with per-character armour/shield and weapon comparisons.
+- Inventory side panel with AC and independent A/B weapon hit and damage ratings.
+- Combined active buffs and penalties in Inventory and shop comparisons.
+- Community v2.1 ROM extension: STENCH label, gauntlet artwork and signed modifiers.
 - Music and sound effects; the earlier transition, inscription, targeting and item-art fixes.
 - Fixed missing Camp/Inventory cursors and skipped Camp actions after loading during Rest Party.
 - Original starting ability scores by default; development-only all-18 stats are disabled.
@@ -53,16 +56,22 @@ opens pause; the south face button selects and the east face button goes back.
 Application menu navigation stays fixed when game controls are remapped.
 F1–F8 no longer act as the old numbered save/load shortcuts.
 
-## Shops
+## Shops and Inventory
 
-In 16:9, the original shop image sits on the left. The added right panel compares
-each party member with the highlighted item. Armour/shields show current and
-prospective AC; lower is better. Weapons compare the readied A weapon, or B when
-A is not a weapon, with the highlighted weapon's damage and hit chance against
-an ordinary **AC 0** opponent. Real enemy defences and special effects can change
-these results. Conditional enchantments are marked as enemy dependent. Class
-restrictions and improvement/downgrade colours are shown. Browsing comparisons
-does not equip or purchase an item.
+In 16:9, the original screen sits on the left and the added right panel aligns
+with each character portrait. Shops compare current equipment with the highlighted
+item. Inventory shows AC plus HIT and DMG for A and B independently; spells,
+abilities and empty slots show N/A. Lower AC is better.
+
+The ratings combine current equipment and active timed buffs/penalties.
+**D20 HIT** is a nominal d20 rating against an ordinary **AC 0** opponent:
+each successful die face contributes five percentage points. It is not an exact
+prediction of the cartridge's uneven random-number conversion. Existing timed
+effects are applied in the display model without averaging possible resistance
+outcomes. Unsupported conditional calculations show N/A or SPECIAL.
+
+Comparisons run on private CPU/RAM copies and do not change combat, equipment,
+random numbers or purchases. See [CURRENT_STATS.md](CURRENT_STATS.md).
 
 ## Progress and compatibility
 
@@ -74,10 +83,11 @@ The menus provide overwrite confirmation and reject empty/damaged slots.
 Settings are remembered in `settings.ini`. Intro changes apply on the next
 Start or Reset.
 
-Back up progress before changing versions. v0.20.0 has a new file-state build
-identifier and does not accept v0.10 or private-preview state files. Normal
-in-game battery saves retain their existing format. Existing characters keep
-the stats stored in their saves.
+Back up progress before changing versions. v0.25.0 requires the new supported
+ROM and uses file-state identifier `wotes-v0.25-states-v1`. Earlier public and
+private-preview file states are not accepted; keep them with their matching build.
+Use the original game's in-game saves to transfer progress. The battery-save
+layout is unchanged, and existing characters retain their saved stats.
 
 ## Validation and limitations
 
@@ -109,8 +119,8 @@ Existing characters keep the stats stored in their saves.
 ## Credits and licensing
 
 GenesisRecomp and the shared recompiler: Matthew Stan and upstream contributors.
-The supported cartridge changes come from **PlanetChili's Warriors of the Eternal Sun
-ROM patch V2.0**. Credit and patch downloads: [planetchili/wotes_patch](https://github.com/planetchili/wotes_patch/releases/tag/V2.0). The original game
+The base cartridge changes come from **PlanetChili's Warriors of the Eternal Sun
+ROM patch V2.0**, extended here by **WotES Community Fixes v2.1**. Credit and patch downloads: [planetchili/wotes_patch](https://github.com/planetchili/wotes_patch/releases/tag/V2.0). The original game
 is by Westwood Associates; its game content is not licensed by this project.
 Project-authored integration code and modifications are offered under
 [PolyForm Noncommercial 1.0.0](LICENSE.md). Existing upstream code retains its

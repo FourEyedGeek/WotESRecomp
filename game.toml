@@ -1,4 +1,4 @@
-# Verified Chili-patched USA/Europe ROM (2 MB, CRC32 405ed24b). Reset/IRQ vectors and stack are read directly from ROM.
+# Verified Chili-patched USA/Europe ROM (2 MB, community fixes v2.1, CRC32 34c1b865). Reset/IRQ vectors and stack are read directly from ROM.
 # WRAM telemetry addresses remain unknown and disabled.
 [game]
 output_prefix = "wotes"
@@ -47,6 +47,7 @@ extra = [0x000200, 0x0009E6, 0x0061EC, 0x02152A, 0x02152E, 0x021532, 0x021536,
 # (all added nonzero content ends at $100DD7), not an instruction entry.
 blacklist = [0x01EDA6, 0x01EFE2, 0x01EF4E, 0x10178C]
 
+# Signed attack modifiers and full-party healing of troglodyte stench.
 # Optional presentation skips. The original caller handles the carry flag
 # exactly as it does when a player dismisses the introductory sequence.
 [[widescreen_site]]
@@ -98,15 +99,4 @@ kind = "game_hook"
 addr = 0x00BA80
 kind = "game_hook"
 
-[[widescreen_site]]
-addr = 0x01FB60
-kind = "game_hook"
-
 # Reuse the same gauntlets icon throughout the pickup flight.
-[[widescreen_site]]
-addr = 0x021332
-kind = "game_hook"
-
-[[widescreen_site]]
-addr = 0x0213B0
-kind = "game_hook"

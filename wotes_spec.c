@@ -3,8 +3,8 @@
 #include "video/genesis_machine.h"
 #include "wotes_video.h"
 #include "wotes_automap.h"
-#include "wotes_floor_items.h"
 #include "wotes_menu.h"
+#include "wotes_rules.h"
 #include "glue.h"
 #include "m68k_interp.h"
 #include <stdlib.h>
@@ -18,7 +18,7 @@ extern GenesisMachine g_machine;
  * enable an overlapping-ROM bank. The shared bus currently starts gated. */
 static void cartridge_reset(void) {
     g_machine.bus.sram_enabled = 1;
-    wotes_floor_items_init();
+    memcpy(g_machine.vdp.vram+0x91e0,g_rom+0x110300,128);
 }
 
 /* Skip the publisher presentation and report the original intro's
@@ -101,11 +101,13 @@ static void test_character_stats(uint32_t address) {
 #endif
 }
 
+static void restored_state(void) {
+    wotes_automap_reset_position();
+    memcpy(g_machine.vdp.vram+0x91e0,g_rom+0x110300,128);
+}
+
 static int game_instruction_hook(uint32_t pc) {
     if (pc == 0xBA70u || pc == 0xBA80u) glue_save_checkpoint(pc);
-    if (pc == 0x1FB60u) wotes_floor_items_select();
-    if (pc == 0x21332u) wotes_floor_item_pickup(0);
-    if (pc == 0x213B0u) wotes_floor_item_pickup(1);
     /* Target selection temporarily clears a readied slot and saves its ID
      * at $A8F8. The equipment menus reuse that byte for their refresh flag.
      * Preserve the ID on the guest stack for the duration of the target
@@ -160,7 +162,7 @@ static void frame_post(uint64_t frame) { wotes_automap_tick(frame); wotes_video_
 const GameSpec g_game_spec = {
     .video = &wotes_video,
     .video_default = "16:9",
-    .display_name = "Warriors of the Eternal Sun - WotESRecomp v0.20.0",
+    .display_name = "Warriors of the Eternal Sun - Community Preview 0.25.0",
     .short_name = "WotES",
     .expected_rom_crc32 = WOTES_ROM_CRC,
     .expected_rom_size = 0x200000u,
@@ -171,8 +173,8 @@ const GameSpec g_game_spec = {
     .on_post_reset = cartridge_reset,
     .on_frame_post = frame_post,
     .sram_loaded = wotes_automap_load,
-    .on_state_loaded = wotes_automap_reset_position,
-    .state_build_id = "wotes-v0.20-states-v1",
+    .on_state_loaded = restored_state,
+    .state_build_id = "wotes-v0.25-states-v1",
     .state_size = state_size,
     .state_save = state_save,
     .state_load = state_load,

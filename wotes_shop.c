@@ -1,12 +1,20 @@
 #include "wotes_shop.h"
+#include "wotes_rules.h"
 #include "genesis_runtime.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 static char rows[4][6][20];
 static uint32_t colors[4][6];
+static int panel_mode;
 static unsigned u16(const uint8_t *p){return (p[0]<<8)|p[1];}
 static unsigned rec(unsigned id){return 0x3e58c+(id-1)*16;}
+static int effect_count(unsigned actor){
+ int count=0;for(unsigned n=93;n<102;n+=2)if(g_ram[actor+n])++count;return count;
+}
+static void hit_text(char *out,size_t size,int chance){
+ snprintf(out,size,"%d%%",chance/100);
+}
 static int text_at(const GVDP *v,unsigned base,int row,int col,const char *s){
  for(;*s;++s,++col)if((u16(v->vram+((base+row*128+col*2)&65535))&2047)!=(unsigned char)*s+0x591)return 0;
  return 1;
@@ -38,16 +46,18 @@ static void refresh(unsigned item){
    }else strcpy(rows[i][3],"WITH ITEM  ?");
    strcpy(rows[i][5],"LOWER AC IS BETTER");
   }else if(kind==2){
-   int lo,hi,hit;unsigned current=g_ram[a+30];
+   int lo,hi,hit,status;char chance[16];unsigned current=g_ram[a+30];int slot=0;
    strcpy(rows[i][1],"READIED A / NEW");
-   if(!current || g_rom[rec(current)]!=2){current=g_ram[a+31];strcpy(rows[i][1],"READIED B / NEW");}
-   int ok=wotes_shop_weapon(g_ram,a,current,&lo,&hi,&hit);
-   if(ok){snprintf(rows[i][2],20,"DMG %d-%d",lo,hi);snprintf(rows[i][4],20,"HIT %d%%",hit);}
+   if(!current || g_rom[rec(current)]!=2){current=g_ram[a+31];slot=1;strcpy(rows[i][1],"READIED B / NEW");}
+   int ok=wotes_shop_weapon(g_ram,a,current,&lo,&hi,&hit,&status);
+   if(ok){snprintf(rows[i][2],20,"DMG %d-%d",lo,hi);hit_text(chance,sizeof chance,hit);snprintf(rows[i][4],20,"D20 HIT %s",chance);
+    if(status)snprintf(rows[i][1],20,effect_count(a)==1 && wotes_stench_active(g_ram,a)?"%c / NEW STENCH -2":"%c / NEW + EFFECTS",slot?'B':'A');}
    else{strcpy(rows[i][2],"DMG SPECIAL");strcpy(rows[i][4],"HIT SPECIAL");}
    int old_sum=ok?lo+hi:0,old_hit=ok?hit:0;
    if(!can){strcpy(rows[i][3],"CANNOT USE");colors[i][3]=red;}
-   else if(wotes_shop_weapon(g_ram,a,item,&lo,&hi,&hit)){
-    snprintf(rows[i][3],20," -> %d-%d",lo,hi);snprintf(rows[i][5],20," -> %d%% VS AC 0",hit);
+   else if(wotes_shop_weapon(g_ram,a,item,&lo,&hi,&hit,&status)){
+    snprintf(rows[i][3],20," -> %d-%d",lo,hi);hit_text(chance,sizeof chance,hit);snprintf(rows[i][5],20," -> %s VS AC 0",chance);
+    if(status)snprintf(rows[i][1],20,effect_count(a)==1 && wotes_stench_active(g_ram,a)?"%c / NEW STENCH -2":"%c / NEW + EFFECTS",slot?'B':'A');
     colors[i][3]=!ok || lo+hi==old_sum?ink:lo+hi>old_sum?green:red;
     colors[i][5]=!ok || hit==old_hit?ink:hit>old_hit?green:red;
    }else{strcpy(rows[i][3],"ENEMY DEPENDENT");strcpy(rows[i][5],"SPECIAL EFFECT");}
@@ -67,9 +77,45 @@ int wotes_shop_scene(const GVDP *v){
   unsigned index=y/24*8+x/24;item=g_ram[0x1000+index];
  }
  static uint8_t previous[600];static unsigned last=~0u;
- if(item!=last || memcmp(previous,g_ram+0x912c,600)){
+ if(panel_mode!=1 || item!=last || memcmp(previous,g_ram+0x912c,600)){
+  panel_mode=1;
   memcpy(previous,g_ram+0x912c,600);last=item;refresh(item);
  }
+ return 1;
+}
+int wotes_inventory_scene(const GVDP *v){
+ if(!(v->reg[1]&0x40) || !(v->reg[12]&1) || v->reg[17]!=0x8e)return 0;
+ unsigned base=(v->reg[2]&56)*1024;
+ if(!text_at(v,base,1,2,"NAME:") || !text_at(v,base,12,2,"ITEMS CARRIED") ||
+    !text_at(v,base,16,2,"ABILITIES/SPELLS"))return 0;
+ static uint8_t previous[600];
+ if(panel_mode==2 && !memcmp(previous,g_ram+0x912c,600))return 1;
+ panel_mode=2;memcpy(previous,g_ram+0x912c,600);
+ for(int i=0;i<4;++i){
+  unsigned a=0x912c+150*i;int ac,active=0;
+  memset(rows[i],0,sizeof rows[i]);
+  for(int n=0;n<6;++n)colors[i][n]=0xffc8d7df;
+  if(wotes_shop_ac(g_ram,a,0,&ac))snprintf(rows[i][0],20,"AC = %d",ac);
+  else strcpy(rows[i][0],"AC = N/A");
+  colors[i][0]=0xffe0b962;
+  for(int slot=0;slot<2;++slot){
+   int low,high,hit,status;char chance[16];unsigned id=g_ram[a+30+slot];int line=1+slot*2;
+   if(wotes_shop_weapon(g_ram,a,id,&low,&high,&hit,&status)){
+    hit_text(chance,sizeof chance,hit);
+    snprintf(rows[i][line],20,"%c HIT = %s",slot?'B':'A',chance);
+    snprintf(rows[i][line+1],20,"DMG = %d-%d",low,high);
+   }else{
+    snprintf(rows[i][line],20,"%c HIT = N/A",slot?'B':'A');
+    strcpy(rows[i][line+1],"DMG = N/A");
+   }
+  }
+  active=effect_count(a);
+  strcpy(rows[i][5],active?"D20 AC0 + EFFECTS":"D20 VS AC 0");
+  if(active==1 && wotes_stench_active(g_ram,a))strcpy(rows[i][5],"D20 AC0 STENCH -2");
+  if(active)colors[i][5]=0xffe0b962;
+ }
+ const char *trace=getenv("WOTES_SHOP_TRACE");
+ if(trace && *trace){FILE *f=fopen(trace,"a");if(f){fprintf(f,"inventory\n");for(int i=0;i<4;++i){for(int j=0;j<6;++j)fprintf(f,"%s | ",rows[i][j]);fputc('\n',f);}fclose(f);}}
  return 1;
 }
 static const char *glyph(char c)
@@ -104,6 +150,8 @@ static const char *glyph(char c)
     case '+':return "000010111010000";
     case '%':return "101001010100101";
     case ':':return "000010000010000";
+    case '.':return "000000000000010";
+    case '=':return "000111000111000";
     case '/':return "001001010100100";
     case '?':return "110001010000010";
     default:return "000000000000000";

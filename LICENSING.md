@@ -40,6 +40,14 @@ relicensed or distributed by this project.
 Generated C is a translation of game instructions, not automatically new
 project-owned code. Recompilation and omission of the original ROM do not by
 themselves establish rights to redistribute that translation or a compiled
-game executable. The v0.20.0 publication therefore contains handwritten source,
+game executable. The v0.25.0 publication therefore contains handwritten source,
 configuration, build scripts and engine patches, without generated translations
 or a precompiled game executable. Users supply their own supported ROM locally.
+
+## Community extension
+
+The Community v2.1 BPS is an independent extension for an already Chili V2.0-patched
+ROM, not an official PlanetChili release or a replacement license for that patch.
+The project license covers original extension code only to the extent its
+contributors hold applicable rights. The BPS and its build process reference
+original game code and artwork; no rights to that content are granted.
