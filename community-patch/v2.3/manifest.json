@@ -1,0 +1,60 @@
+{
+  "version": "v2.3",
+  "status_screen_revision": "v0.32",
+  "source_crc32": "405ED24B",
+  "target_crc32": "91EFC7F8",
+  "source_sha1": "2380b201b872f7bd2c66f2a4d82df86709332d55",
+  "target_sha1": "8757cf0e935656d98e1a29677e3e15ba069aa0e5",
+  "bytes": 2097152,
+  "patch_bytes": 7518,
+  "patch_sha256": "be0adc0279238d7a234de4245e76a22c7234d64db804164f3115e61829187a7c",
+  "cumulative": true,
+  "earlier_fix_manifest": {
+    "base_chili_v2": {
+      "bytes": 2097152,
+      "crc32": "405ED24B",
+      "sha1": "2380b201b872f7bd2c66f2a4d82df86709332d55",
+      "sha256": "6f22cd971c076e87cac3a3f5b798318ce0fb14537229c4933c14ec521372210a"
+    },
+    "community_v21": {
+      "bytes": 2097152,
+      "crc32": "34C1B865",
+      "sha1": "0755b029387e17f588a00d1b74bfb4230efea7e8",
+      "sha256": "d70477e36481445108421b958c167ef678a319d25645516a5f4fbdc43d51351b"
+    },
+    "community_v22": {
+      "bytes": 2097152,
+      "crc32": "5C993724",
+      "sha1": "74f1ea561ce6bbd72b0aed5cfee92957691b71cf",
+      "sha256": "3d4f376b2d806626a61678df21a5c9f2774468c30d42ac20883c0090a970714a"
+    },
+    "changes_from_v21": [
+      {
+        "address": "110600",
+        "bytes": 16,
+        "purpose": "Save action scratch word on stack; reproduce targeting-entry instruction"
+      },
+      {
+        "address": "110640",
+        "bytes": 16,
+        "purpose": "Restore saved action byte, balance stack, reproduce original exit flag and tail"
+      },
+      {
+        "address": "003950",
+        "bytes": 6,
+        "purpose": "Jump to cartridge action-preservation helper"
+      },
+      {
+        "address": "003B62",
+        "bytes": 6,
+        "purpose": "Jump to cartridge action-preservation helper"
+      },
+      {
+        "address": "003D7E",
+        "bytes": 6,
+        "purpose": "Jump to cartridge action-preservation helper"
+      }
+    ],
+    "genesis_checksum": "8C13"
+  }
+}

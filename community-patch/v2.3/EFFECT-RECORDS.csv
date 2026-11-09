@@ -1,0 +1,237 @@
+record_id_zero_based,record_name,type,nominal_duration,storage_category,classification,status_entry
+0,CURE LIGHT WOUNDS,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+1,CURE DISEASE,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+2,CURE SERIOUS WOUNDS,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+3,CURE CRITICAL WOUNDS,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+4,CUREALL,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+5,CAUSE LIGHT WOUNDS,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+6,CAUSE DISEASE,0,0,0,instant condition application (condition flags/secondary timed record),DISEASE
+7,CAUSE SERIOUS WOUNDS,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+8,CAUSE CRITICAL WOUNDS,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+9,TURN UNDEAD,3,2,0,timed or area effect,FEAR
+10,HIDE,3,127,0,timed or area effect,HIDDEN
+11,DETECT MAGIC,0,0,1,instant action or ordinary equipment; not an ongoing companion status,DETECT MAGIC
+12,CURE BLINDNESS,0,0,0,inert record or action with no VM program,
+13,WIZARD EYE,0,0,0,inert record or action with no VM program,
+14,LIGHT,0,12,0,timed or area effect,LIGHT
+15,DARKNESS,0,12,0,timed or area effect,DARKNESS
+16,SILENCE 15' RADIUS,0,12,1,timed or area effect,SILENCED
+17,CONTINUAL LIGHT,0,127,0,timed or area effect,LIGHT
+18,CONTINUAL DARK,0,127,0,timed or area effect,DARKNESS
+19,PROTECTION FROM EVIL,0,12,0,timed or area effect,PROTECTION EVIL
+20,PROTECT FROM EVIL 10',0,12,2,timed or area effect,PROTECTION EVIL
+21,ANTI MAGIC SHELL,0,12,0,timed or area effect,ANTI MAGIC SHELL
+22,REMOVE FEAR,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+23,CAUSE FEAR,0,2,0,timed or area effect,FEAR
+24,RESIST COLD,0,6,2,timed or area effect,RESIST COLD
+25,BLESS,0,6,0,timed or area effect,BLESS
+26,BLIGHT,0,6,0,timed or area effect,BLIGHT
+27,DETECT TRAPS,0,2,1,timed or area effect,DETECTION
+28,RESIST FIRE,0,2,0,timed or area effect,RESIST FIRE
+29,STRIKING,0,2,0,timed or area effect,STRIKING
+30,ANIMATE DEAD,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+31,CREATE WATER,0,0,0,inert record or action with no VM program,
+32,DISPEL MAGIC,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+33,DISPEL EVIL,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+34,DEATH SPELL,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+35,NEUTRALIZE POISON,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+36,CREATE POISON,0,0,0,instant condition application (condition flags/secondary timed record),POISON
+37,STICKS TO SNAKES,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+38,BARRIER,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+39,REMOVE BARRIER,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+40,HOLD PORTAL,0,8,0,timed or area effect,HOLD PORTAL
+41,MAGIC MISSILE,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+42,READ LANGUAGES,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+43,READ MAGIC,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+44,SHIELD,0,2,0,timed or area effect,SHIELD
+45,SLEEP,0,4,0,timed or area effect,ASLEEP
+46,ENTANGLE,0,255,0,timed or area effect,IMMOBILISED
+47,MIRROR IMAGE,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+48,WEB,0,5,0,timed or area effect,IMMOBILISED
+49,WIZARD LOCK,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+50,FIREBALL,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+51,FLY,0,11,0,timed or area effect,FLY
+52,HASTE,0,3,0,timed or area effect,HASTE
+53,SLOW,0,3,0,timed or area effect,SLOW
+54,INFRAVISION,0,0,0,inert record or action with no VM program,
+55,LIGHTNING BOLT,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+56,PROTECTION FROM MISSILES,0,12,0,timed or area effect,PROTECT MISSILES
+57,WATER BREATHING,0,144,0,timed or area effect,WATER BREATHING
+58,CONFUSION,0,12,0,timed or area effect,CONFUSION
+59,ICE STORM,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+60,WALL OF FIRE,0,8,0,timed or area effect,WALL OF FIRE
+61,CLOUDKILL,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+62,FEEBLEMIND,0,0,0,instant condition application (condition flags/secondary timed record),FEEBLEMIND
+63,WALL OF STONE,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+64,DISINTEGRATE,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+65,PROJECT IMAGE,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+66,STONE TO FLESH,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+67,FLESH TO STONE,0,0,0,instant condition application (condition flags/secondary timed record),PETRIFIED
+68,WALL OF IRON,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+69,BOW,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+70,+1 BOW,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+71,DAGGER,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+72,+1 DAGGER,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+73,+2 DAGGER,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+74,MACE,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+75,+1 MACE,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+76,+2 MACE,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+77,+3 MACE,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+78,SLING,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+79,+1 SLING,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+80,SWORD,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+81,+1 SWORD,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+82,+2 SWORD,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+83,+3 SWORD,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+84,"+1 SWORD, ENERGY DRAIN",2,0,0,instant permanent stat/level change; no ongoing status record,
+85,"+1 SWORD, +3 VS. ENCHANTED",2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+86,+1 SWORD/+2 VS SPELL USERS,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+87,"+1 SWORD, FLAMES",2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+88,"+1 SWORD, +3 VS. UNDEAD",2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+89,"+1 SWORD, +3 VS. DRAGONS",2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+90,+3 SWORD VS REGENERATING,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+91,AXE,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+92,+1 AXE,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+93,+2 AXE,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+94,SPEAR,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+95,+1 SPEAR,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+96,+2 SPEAR,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+97,+3 SPEAR,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+98,WAR HAMMER,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+99,+1 WAR HAMMER,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+100,+2 WAR HAMMER,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+101,+3 WAR HAMMER,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+102,STAFF,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+103,LEATHER ARMOR,4,0,0,instant action or ordinary equipment; not an ongoing companion status,
+104,+1 LEATHER ARMOR,4,0,0,instant action or ordinary equipment; not an ongoing companion status,
+105,+2 LEATHER ARMOR,4,0,0,instant action or ordinary equipment; not an ongoing companion status,
+106,+3 LEATHER ARMOR,4,0,0,instant action or ordinary equipment; not an ongoing companion status,
+107,CHAIN MAIL,4,0,0,instant action or ordinary equipment; not an ongoing companion status,
+108,+1 CHAIN MAIL,4,0,0,instant action or ordinary equipment; not an ongoing companion status,
+109,+2 CHAIN MAIL,4,0,0,instant action or ordinary equipment; not an ongoing companion status,
+110,+3 CHAIN MAIL,4,0,0,instant action or ordinary equipment; not an ongoing companion status,
+111,PLATE MAIL,4,0,0,instant action or ordinary equipment; not an ongoing companion status,
+112,+1 PLATE MAIL,4,0,0,instant action or ordinary equipment; not an ongoing companion status,
+113,+2 PLATE MAIL,4,0,0,instant action or ordinary equipment; not an ongoing companion status,
+114,+3 PLATE MAIL,4,0,0,instant action or ordinary equipment; not an ongoing companion status,
+115,SHIELD,5,0,0,instant action or ordinary equipment; not an ongoing companion status,
+116,+1 SHIELD,5,0,0,instant action or ordinary equipment; not an ongoing companion status,
+117,+2 SHIELD,5,0,0,instant action or ordinary equipment; not an ongoing companion status,
+118,+3 SHIELD,5,0,0,instant action or ordinary equipment; not an ongoing companion status,
+119,RING OF FIRE RESISTANCE,6,0,0,continuous magic item,FIRE RING
+120,RING OF PROTECTION +1,6,0,0,continuous magic item,PROTECTION RING
+121,RING OF REGENERATION,7,0,0,continuous magic item,REGENERATION
+122,RING OF SPELL TURNING,6,0,0,continuous magic item,SPELL TURNING
+123,RING OF WATER WALKING,6,0,0,continuous magic item,WATER WALKING
+124,RING OF WEAKNESS,6,0,0,continuous magic item,WEAKNESS
+125,BOOTS OF SPEED,6,0,0,continuous magic item,SPEED BOOTS
+126,DISPLACER CLOAK,6,0,0,continuous magic item,DISPLACEMENT
+127,DRUMS OF PANIC,2,30,0,timed or area effect,FEAR
+128,GAUNTLETS OF OGRE POWER,6,0,0,continuous magic item,OGRE POWER
+129,GIRDLE OF GIANT STRENGTH,6,0,0,continuous magic item,GIANT GIRDLE
+130,HORN OF BLASTING,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+131,POTION OF FIRE RESISTANCE,2,10,0,timed or area effect,RESIST FIRE
+132,POTION OF HEALING,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+133,POTION OF HEROISM,2,10,0,timed or area effect,HEROISM
+134,POTION OF POISON,2,0,0,instant condition application (condition flags/secondary timed record),POISON
+135,POTION OF CURE POISON,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+136,POTION OF GIANT STRENGTH,2,10,0,timed or area effect,GIANT STRENGTH
+137,POTION OF INVULNERABILITY,2,10,0,timed or area effect,INVULNERABILITY
+138,POTION OF SPEED,2,10,0,timed or area effect,HASTE
+139,SCROLL,1,100,0,timed or area effect,CURSED
+140,SCROLL,1,0,0,instant action or ordinary equipment; not an ongoing companion status,
+141,MAP,1,0,0,instant action or ordinary equipment; not an ongoing companion status,
+142,PROTECTION FROM ELEMENTALS,1,0,0,instant condition application (condition flags/secondary timed record),RESIST FIRE
+143,PROTECTION FROM MAGIC,1,3,0,timed or area effect,ANTI MAGIC SHELL
+144,PROTECTION FROM UNDEAD,1,0,0,instant action or ordinary equipment; not an ongoing companion status,
+145,STAFF OF HEALING,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+146,STAFF OF STRIKING,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+147,WAND OF COLD,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+148,WAND OF FEAR,2,2,0,timed or area effect,FEAR
+149,WAND OF FIRE BALLS,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+150,WAND OF LIGHTNING,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+151,WAND OF PARALYZATION,2,6,0,timed or area effect,IMMOBILISED
+152,WAND OF MAGIC DETECTION,2,0,0,instant action or ordinary equipment; not an ongoing companion status,DETECT MAGIC
+153,WAND OF NEGATION,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+154,"WAND, DETECT SECRET DOORS",2,2,0,timed or area effect,DETECTION
+155,WAND OF TRAP DETECTION,2,2,0,timed or area effect,DETECTION
+156,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+157,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+158,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+159,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+160,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+161,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+162,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+163,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+164,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+165,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+166,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+167,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+168,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+169,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+170,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+171,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+172,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+173,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+174,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+175,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+176,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+177,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+178,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+179,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+180,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+181,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+182,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+183,,2,0,0,instant permanent stat/level change; no ongoing status record,
+184,,2,0,0,instant permanent stat/level change; no ongoing status record,
+185,,2,0,0,instant permanent stat/level change; no ongoing status record,
+186,,2,0,0,instant permanent stat/level change; no ongoing status record,
+187,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+188,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+189,,2,0,0,instant condition application (condition flags/secondary timed record),DISEASE
+190,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+191,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+192,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+193,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+194,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+195,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+196,,2,0,0,instant condition application (condition flags/secondary timed record),POISON
+197,,2,0,0,instant condition application (condition flags/secondary timed record),PETRIFIED
+198,,2,0,0,instant condition application (condition flags/secondary timed record),PETRIFIED
+199,,2,0,0,instant condition application (condition flags/secondary timed record),IMMOBILISED
+200,,2,0,0,instant condition application (condition flags/secondary timed record),POISON
+201,,2,0,0,instant condition application (condition flags/secondary timed record),IMMOBILISED
+202,,2,0,0,instant condition application (condition flags/secondary timed record),IMMOBILISED
+203,,2,0,0,instant condition application (condition flags/secondary timed record),BLIND
+204,,2,0,0,instant condition application (condition flags/secondary timed record),POISON
+205,,2,0,0,instant condition application (condition flags/secondary timed record),POISON
+206,,2,0,0,instant condition application (condition flags/secondary timed record),POISON
+207,,2,0,0,instant condition application (condition flags/secondary timed record),IMMOBILISED
+208,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+209,,7,0,0,continuous magic item,CREATURE REGEN
+210,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+211,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+212,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+213,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+214,,2,255,0,timed or area effect,STENCH
+215,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+216,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+217,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+218,,0,6,0,timed or area effect,IMMOBILISED
+219,DETECT MAGIC,0,0,1,instant action or ordinary equipment; not an ongoing companion status,DETECT MAGIC
+220,LIGHT,0,12,0,timed or area effect,LIGHT
+221,DARKNESS,0,12,0,timed or area effect,DARKNESS
+222,PROTECTION FROM EVIL,0,12,0,timed or area effect,PROTECTION EVIL
+223,CONTINUAL LIGHT,0,12,0,timed or area effect,LIGHT
+224,CONTINUAL DARK,0,12,0,timed or area effect,DARKNESS
+225,DISPEL MAGIC,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+226,PROTECT FROM EVIL 10',0,12,2,timed or area effect,PROTECTION EVIL
+227,ANIMATE DEAD,0,0,0,instant action or ordinary equipment; not an ongoing companion status,
+228,,2,6,0,timed or area effect,IMMOBILISED
+229,WITHERED VINE,2,0,0,inert record or action with no VM program,
+230,MEDALLION,6,0,0,inert record or action with no VM program,
+231,,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+232,BOULDER,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+233,TRAP!,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+234,SECRET DOOR,2,0,0,instant action or ordinary equipment; not an ongoing companion status,
+235,DISPEL EVIL,0,127,2,timed or area effect,FEAR

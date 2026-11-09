@@ -1,60 +1,22 @@
-# Patch your ROM for v0.25.0
+# Patch your ROM: Community v2.3
 
-The Windows port requires **WotES Community Fixes v2.1**, an independent extension
-to **PlanetChili's ROM Patch V2.0**. The two version numbers are separate:
-v0.25.0 is the Windows port; v2.1 identifies the supported ROM extension.
+Follow [community-patch/v2.3/README.md](community-patch/v2.3/README.md) for the complete guide and checksums.
 
-## If you already have a Chili V2.0 ROM
+1. Download and extract [WotES-Community-v2.3.zip](https://github.com/FourEyedGeek/WotESRecomp/releases/download/v2.3/WotES-Community-v2.3.zip).
+2. Start with an **already PlanetChili V2.0-patched USA/Europe ROM**. If you only have the retail ROM, first apply [Chili's official V2.0 patch](https://github.com/planetchili/wotes_patch/releases/tag/V2.0).
+3. Apply **WotES Community v2.3 - APPLY TO Chili V2.0.bps** with a BPS-compatible patcher such as Floating IPS.
+4. Save the output to a new filename. Start normally and transfer progress through an in-game battery save.
 
-1. Back up your ROM and in-game saves.
-2. Download and extract `WotES-Community-Fixes-v2.1.zip` from the
-   [v0.25.0 release](https://github.com/FourEyedGeek/WotESRecomp/releases/tag/v0.25.0).
-3. Open a BPS patcher, such as [Floating IPS](https://github.com/Alcaro/Flips).
-4. Choose **Apply Patch**, then select
-   `WotES Community Fixes v2.1 (for Chili V2.0).bps`.
-5. Select your **already Chili V2.0-patched USA/Europe ROM** as the input.
-6. Save the patched ROM under a new name. Do not overwrite your backup.
+Required input: 2,097,152 bytes, CRC32 `405ED24B`, SHA-1 `2380b201b872f7bd2c66f2a4d82df86709332d55`.
 
-The extension cannot be applied directly to an unpatched ROM, another hack,
-or a ROM that already has Community v2.1. Keep checksum validation enabled.
-If the patcher rejects the input, check the ROM version rather than forcing it.
+Result: 2,097,152 bytes, CRC32 `91EFC7F8`, SHA-1 `8757cf0e935656d98e1a29677e3e15ba069aa0e5`.
 
-## If you have an original USA/Europe ROM
+One cumulative patch includes v2.1 fixes, v2.2 action preservation and the v0.32 status screen. Do not apply it to an earlier Community/status ROM or patch twice. Wrong inputs are rejected; keep checksum validation enabled.
 
-First obtain [PlanetChili's official V2.0 patch](https://github.com/planetchili/wotes_patch/releases/tag/V2.0)
-and follow its instructions. Then apply our BPS extension using the steps above.
-Neither this repository nor its releases supplies a ROM.
+The ROM output matches the tested Complete Status v0.32 ROM. No game balance changes are added by the status screen. Old emulator states may contain obsolete pointers/stack layouts; keep backups and use in-game SRAM saves when moving versions.
 
-## Verify the result
+## Older Windows source
 
-| Fingerprint | Chili V2.0 input | Community v2.1 output |
-|---|---|---|
-| Size | 2,097,152 bytes | 2,097,152 bytes |
-| CRC32 | `405ED24B` | `34C1B865` |
-| SHA-1 | `2380b201b872f7bd2c66f2a4d82df86709332d55` | `0755b029387e17f588a00d1b74bfb4230efea7e8` |
+The repository's Windows source remains v0.25.0 and requires Community v2.1, not this v2.3 ROM. Follow [PATCHING-v0.25.md](PATCHING-v0.25.md) if building that historical source release. The matching local Windows preview for v2.3 is v0.32.
 
-On Windows, `Get-FileHash -Algorithm SHA1 "your-patched-ROM.md"` checks SHA-1.
-The included Python applier also validates input, output and patch checksums:
-
-```text
-python community-patch/apply_bps.py "your-chili-v2.md" "community-patch/WotES Community Fixes v2.1 (for Chili V2.0).bps" "WotES Community v2.1.md"
-```
-
-For the Windows source build, copy the resulting Community v2.1 ROM to
-`local/wotes.md`, run `setup-deps.ps1`, then `build.ps1`.
-For an emulator, open the new ROM normally. Prefer an in-game save after a
-fresh start: older emulator save states may preserve old code or graphics.
-If necessary, copy your `.srm` to match the new ROM's base filename.
-
-## Included ROM fixes
-
-- STENCH appears in the original party status label when no higher-priority
-  negative condition occupies it.
-- Gauntlets of Ogre Power use their inventory icon on dungeon floors, during
-  pickup, and when dropped in the overhead view.
-- Negative attack modifiers remain signed in the Chili attack helper.
-
-Stench timing, resistance checks, rest and priest treatment remain unchanged.
-This extension does not include widescreen, app menus, automapping, save states,
-or testing-only all-18 starting stats. Those are separate port features.
-See [patch details](community-patch/README.md) and [verification](community-patch/VERIFY.md).
+No ROM, translated game source or executable is included in this repository or release.
